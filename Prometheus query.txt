@@ -1,0 +1,26 @@
+Prometheus query
+#https://rancher.com/docs/rancher/v2.x/en/monitoring-alerting/v2.5/configuration/expression/
+
+POD CPU Over Max Requested
+
+sum(rate(container_cpu_usage_seconds_total[5m])) by (pod_name, container_name) / sum(label_join(label_join(kube_pod_container_resource_requests_cpu_cores,"pod_name", "", "pod"),"container_name", "", "container")) by (pod_name, container_name)
+
+
+POD CPU Close to Limit
+
+sum(rate(container_cpu_usage_seconds_total[5m])) by (pod_name, container_name) / sum(label_join(label_join(kube_pod_container_resource_limits_cpu_cores,"pod_name", "", "pod"),"container_name", "", "container")) by (pod_name, container_name)
+
+
+Workload POD Restarts
+
+sum(kube_pod_container_status_restarts_total) by (namespace)
+
+
+POD Memory Limit
+
+sum(container_memory_working_set_bytes) by (pod_name, container_name) / sum(label_join(label_join(kube_pod_container_resource_limits_memory_bytes,"pod_name", "", "pod"),"container_name", "", "container")) by (pod_name, container_name)
+
+
+Workload Hit Max Replicas
+
+sum(kube_hpa_status_current_replicas) by (hpa) / sum(kube_hpa_spec_max_replicas) by (hpa)
