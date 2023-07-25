@@ -1,0 +1,28 @@
+import boto3
+
+def get_api_gateway_info(api_gateway_name):
+    client = boto3.client('apigateway')
+
+    # Obtenha informações sobre a API pelo nome
+    response = client.get_rest_apis(
+        limit=100
+    )
+
+    for api in response['items']:
+        if api['name'] == api_gateway_name:
+            return api
+
+    return None
+
+# Substitua 'NOME_DA_SUA_API_GATEWAY' pelo nome da sua API Gateway
+api_gateway_name = 'NOME_DA_SUA_API_GATEWAY'
+
+api_info = get_api_gateway_info(api_gateway_name)
+if api_info:
+    print(f"Nome: {api_info['name']}")
+    print(f"ID: {api_info['id']}")
+    print(f"Descrição: {api_info['description']}")
+    print(f"URL de execução: {api_info['executionArn']}")
+    # Você pode acessar mais detalhes do dicionário 'api_info' conforme necessário.
+else:
+    print(f"A API Gateway '{api_gateway_name}' não foi encontrada.")
